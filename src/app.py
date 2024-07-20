@@ -96,8 +96,9 @@ while True:
 
                 annotations = collections.OrderedDict(sorted(annotations.items()))
 
+                new_annotations_copy = new_annotations.copy()
                 updated = False
-                for new_annotation in new_annotations:
+                for new_annotation in new_annotations_copy:
                     if new_annotation.startswith(SECRET_PREFIX) and not new_annotation in annotations:
                         updated = True
                         del new_annotations[new_annotation]
