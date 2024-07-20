@@ -87,8 +87,11 @@ while True:
                 logging.info(f"Process cluster {cluster_name} in namespace: {cluster_namespace}")
 
                 cluster_identifier = f"{cluster_namespace}/{cluster_name}"
+                cluster_wildcard_identifier = f"{cluster_namespace}/*"
 
                 annotations = all_clusters_annotations.copy()
+                if cluster_wildcard_identifier in annotations:
+                    annotations.update(cluster_annotations[cluster_wildcard_identifier])
                 if cluster_identifier in annotations:
                     annotations.update(cluster_annotations[cluster_identifier])
 
