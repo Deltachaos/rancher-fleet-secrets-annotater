@@ -3,6 +3,8 @@ import logging
 from kubernetes import client, config
 import base64
 import traceback
+import collections
+import json
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -90,6 +92,8 @@ while True:
 
                 new_annotations = cluster_resource['metadata'].get('annotations', {})
 
+                annotations = collections.OrderedDict(sorted(annotations.items()))
+
                 updated = False
                 for new_annotation in new_annotations:
                     if new_annotation.startswith("rancher-fleet-secrets.deltachaos.de/secret/") and not new_annotation in new_annotations:
@@ -97,8 +101,9 @@ while True:
                         del new_annotations[new_annotation]
 
                 new_annotations.update(annotations)
+                new_annotations = collections.OrderedDict(sorted(new_annotations.items()))
 
-                if annotations or updated:
+                if json.dumps(new_annotations) != json.dumps(annotations) or updated:
                     logging.info(f"Annotating cluster: {cluster_identifier} with {new_annotations}")
                     # Update the Cluster resource with the collected annotations
                     body = {
