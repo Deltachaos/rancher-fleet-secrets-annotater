@@ -121,6 +121,8 @@ while True:
                         body=body
                     )
                     logging.info(f"Successfully patched cluster: {cluster_identifier}")
+                else:
+                    logging.info(f"Cluster already up to date: {cluster_identifier}")
 
         logging.info("Sleeping for 15 seconds.")
         # Sleep for 15 seconds
