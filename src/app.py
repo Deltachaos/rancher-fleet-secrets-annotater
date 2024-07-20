@@ -33,6 +33,7 @@ while True:
         secrets = v1.list_secret_for_all_namespaces()
 
         cluster_annotations = {}
+        all_clusters_annotations = {}
 
         for secret in secrets.items:
             annotations = secret.metadata.annotations
@@ -52,18 +53,21 @@ while True:
                         value = secret.data[key]
                         logging.info(f"Found key '{key}' in secret. Preparing to annotate clusters.")
 
-                        # Collect annotations for each cluster
-                        for cluster_identifier in clusters:
-                            if cluster_identifier not in cluster_annotations:
-                                cluster_annotations[cluster_identifier] = {}
-                            cluster_annotations[cluster_identifier][f"rancher-fleet-secrets.deltachaos.de/secret/{key}"] = value
+                        if cluster_annotation != "":
+                            # Collect annotations for each cluster
+                            for cluster_identifier in clusters:
+                                if cluster_identifier not in cluster_annotations:
+                                    cluster_annotations[cluster_identifier] = {}
+                                cluster_annotations[cluster_identifier][f"rancher-fleet-secrets.deltachaos.de/secret/{key}"] = value
+                        else:
+                            all_clusters_annotations[f"rancher-fleet-secrets.deltachaos.de/secret/{key}"] = value
+
 
         logging.info("Fetching all namespaces.")
         # Get all namespaces
         namespaces = v1.list_namespace()
         for ns in namespaces.items:
             namespace = ns.metadata.name
-            logging.info(f"Fetching cluster resources in namespace: {namespace}")
             # Get all Cluster resources in the current namespace
             cluster_resources = crd_api.list_namespaced_custom_object(
                 group=GROUP, version=VERSION, plural=PLURAL, namespace=namespace
@@ -72,27 +76,35 @@ while True:
             for cluster_resource in cluster_resources['items']:
                 cluster_name = cluster_resource['metadata']['name']
                 cluster_namespace = cluster_resource['metadata']['namespace']
+
+                logging.info(f"Process cluster {cluster_name} in namespace: {cluster_namespace}")
+
                 cluster_identifier = f"{cluster_namespace}/{cluster_name}"
 
-                if cluster_identifier in cluster_annotations:
-                    logging.info(f"Annotating cluster: {cluster_identifier}")
-                    annotations = cluster_resource['metadata'].get('annotations', {})
+                annotations = all_clusters_annotations.copy()
+                if cluster_identifier in annotations:
                     annotations.update(cluster_annotations[cluster_identifier])
 
+                if annotations:
+                    logging.info(f"Annotating cluster: {cluster_identifier} with {annotations}")
+                    annotations = cluster_resource['metadata'].get('annotations', {})
+                    annotations.update(annotations)
                     # Update the Cluster resource with the collected annotations
                     body = {
                         "metadata": {
                             "annotations": annotations
                         }
                     }
-                    crd_api.patch_namespaced_custom_object(
-                        group=GROUP,
-                        version=VERSION,
-                        namespace=cluster_namespace,
-                        plural=PLURAL,
-                        name=cluster_name,
-                        body=body
-                    )
+                    logging.info(f"Patch: {body}")
+
+                    #crd_api.patch_namespaced_custom_object(
+                    #    group=GROUP,
+                    #    version=VERSION,
+                    #    namespace=cluster_namespace,
+                    #    plural=PLURAL,
+                    #    name=cluster_name,
+                    #    body=body
+                    #)
                     logging.info(f"Successfully patched cluster: {cluster_identifier}")
 
         logging.info("Sleeping for 15 seconds.")
