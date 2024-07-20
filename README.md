@@ -12,11 +12,22 @@ metadata:
   name: my-secret
   annotations:
     rancher-fleet-secrets.alpha.deltachaos.de/replicate: some-key=some-copy,someother-key
+    rancher-fleet-secrets.alpha.deltachaos.de/clusters: fleet-local/*,fleet-default/cluster1
 type: Opaque
 stringData:
   some-key: some-value
   someother-key: someother-value
   foo: bar
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-other-secret
+  annotations:
+    rancher-fleet-secrets.alpha.deltachaos.de/replicate: other-secret-key
+type: Opaque
+stringData:
+  other-secret-key: test
 ```
 
 This will replicate the values from the secret as annotations to the Rancher Fleet Cluster Resource:
@@ -24,9 +35,28 @@ This will replicate the values from the secret as annotations to the Rancher Fle
 ```yaml
 kind: Cluster
 metadata:
+  name: cluster1
+  namespace: fleet-default
   annotations:
-    rancher-fleet-secrets.deltachaos.de/secret/some-copy: some-value
-    rancher-fleet-secrets.deltachaos.de/secret/someother-key: someother-value
+    rancher-fleet-secrets-secret.deltachaos.de/other-secret-key: test
+---
+kind: Cluster
+metadata:
+  name: cluster2
+  namespace: fleet-default
+  annotations:
+    rancher-fleet-secrets-secret.deltachaos.de/some-copy: some-value
+    rancher-fleet-secrets-secret.deltachaos.de/someother-key: someother-value
+    rancher-fleet-secrets-secret.deltachaos.de/other-secret-key: test
+---
+kind: Cluster
+metadata:
+  name: cluster3
+  namespace: fleet-local
+  annotations:
+    rancher-fleet-secrets-secret.deltachaos.de/some-copy: some-value
+    rancher-fleet-secrets-secret.deltachaos.de/someother-key: someother-value
+    rancher-fleet-secrets-secret.deltachaos.de/other-secret-key: test
 ```
 
 # Why is it useful?
