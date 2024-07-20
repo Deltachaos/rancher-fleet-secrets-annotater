@@ -90,9 +90,9 @@ while True:
                 logging.info(f"Process cluster {cluster_identifier}")
 
                 annotations = all_clusters_annotations.copy()
-                if cluster_wildcard_identifier in annotations:
+                if cluster_wildcard_identifier in cluster_annotations:
                     annotations.update(cluster_annotations[cluster_wildcard_identifier])
-                if cluster_identifier in annotations:
+                if cluster_identifier in cluster_annotations:
                     annotations.update(cluster_annotations[cluster_identifier])
 
                 new_annotations = cluster_resource['metadata'].get('annotations', {})
