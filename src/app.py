@@ -91,8 +91,10 @@ while True:
 
                 annotations = all_clusters_annotations.copy()
                 if cluster_wildcard_identifier in cluster_annotations:
+                    logging.info(f"Add annotations for {cluster_wildcard_identifier}")
                     annotations.update(cluster_annotations[cluster_wildcard_identifier])
                 if cluster_identifier in cluster_annotations:
+                    logging.info(f"Add annotations for {cluster_identifier}")
                     annotations.update(cluster_annotations[cluster_identifier])
 
                 new_annotations = cluster_resource['metadata'].get('annotations', {})
