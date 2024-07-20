@@ -38,7 +38,7 @@ while True:
             annotations = secret.metadata.annotations
 
             # Check if the secret has the desired annotation
-            if "rancher-fleet-secrets.alpha.deltachaos.de/replicate" in annotations:
+            if annotations is not None and "rancher-fleet-secrets.alpha.deltachaos.de/replicate" in annotations:
                 logging.info(f"Processing secret: {secret.metadata.name} in namespace: {secret.metadata.namespace}")
 
                 cluster_annotation = annotations.get("rancher-fleet-secrets.alpha.deltachaos.de/clusters", "")
