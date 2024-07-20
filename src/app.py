@@ -26,6 +26,8 @@ GROUP = "fleet.cattle.io"
 VERSION = "v1alpha1"
 PLURAL = "clusters"
 
+SECRET_PREFIX = "rancher-fleet-secrets-secret.deltachaos.de/"
+
 logging.info("Starting the script.")
 
 # Main loop
@@ -63,9 +65,9 @@ while True:
                             for cluster_identifier in clusters:
                                 if cluster_identifier not in cluster_annotations:
                                     cluster_annotations[cluster_identifier] = {}
-                                cluster_annotations[cluster_identifier][f"rancher-fleet-secrets.deltachaos.de/secret/{targetKey}"] = value
+                                cluster_annotations[cluster_identifier][SECRET_PREFIX + targetKey] = value
                         else:
-                            all_clusters_annotations[f"rancher-fleet-secrets.deltachaos.de/secret/{targetKey}"] = value
+                            all_clusters_annotations[SECRET_PREFIX + targetKey] = value
 
 
         logging.info("Fetching all namespaces.")
@@ -96,7 +98,7 @@ while True:
 
                 updated = False
                 for new_annotation in new_annotations:
-                    if new_annotation.startswith("rancher-fleet-secrets.deltachaos.de/secret/") and not new_annotation in new_annotations:
+                    if new_annotation.startswith(SECRET_PREFIX) and not new_annotation in new_annotations:
                         updated = True
                         del new_annotations[new_annotation]
 
