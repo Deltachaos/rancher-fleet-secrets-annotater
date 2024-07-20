@@ -28,3 +28,17 @@ metadata:
     rancher-fleet-secrets.deltachaos.de/secret/some-copy: some-value
     rancher-fleet-secrets.deltachaos.de/secret/someother-key: someother-value
 ```
+
+# Why is it useful?
+
+If you use Rancher fleet to deploy charts to your cluster, you maybe not want to store secrets in your Git repository. If you get some secrets into your local Rancher cluster using `external-secrets-operator` or `sealed-secrets` you can then use them in your fleet deployments like so:
+
+```yaml
+helm:
+  chart: oci://registry-1.docker.io/bitnamicharts/mysql
+  version: 11.1.10
+  releaseName: mysql
+  values:
+    auth:
+      rootPassword: ${ get .ClusterAnnotations "rancher-fleet-secrets.deltachaos.de/secret/some-copy" }
+```
