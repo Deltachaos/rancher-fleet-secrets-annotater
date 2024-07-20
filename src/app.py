@@ -84,10 +84,10 @@ while True:
                 cluster_name = cluster_resource['metadata']['name']
                 cluster_namespace = cluster_resource['metadata']['namespace']
 
-                logging.info(f"Process cluster {cluster_name} in namespace: {cluster_namespace}")
-
                 cluster_identifier = f"{cluster_namespace}/{cluster_name}"
                 cluster_wildcard_identifier = f"{cluster_namespace}/*"
+
+                logging.info(f"Process cluster {cluster_identifier}")
 
                 annotations = all_clusters_annotations.copy()
                 if cluster_wildcard_identifier in annotations:
@@ -109,19 +109,15 @@ while True:
                 if new_annotations != annotations or updated:
                     logging.info(f"Annotating cluster: {cluster_identifier} with {new_annotations}")
                     # Update the Cluster resource with the collected annotations
-                    body = {
-                        "metadata": {
-                            "annotations": new_annotations
-                        }
-                    }
+                    cluster_resource['metadata']['annotations'] = new_annotations
 
-                    crd_api.patch_namespaced_custom_object(
+                    crd_api.replace_cluster_custom_object(
                         group=GROUP,
                         version=VERSION,
                         namespace=cluster_namespace,
                         plural=PLURAL,
                         name=cluster_name,
-                        body=body
+                        body=cluster_resource
                     )
                     logging.info(f"Successfully patched cluster: {cluster_identifier}")
                 else:
