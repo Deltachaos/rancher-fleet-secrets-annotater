@@ -54,8 +54,10 @@ while True:
                 replicate_keys = replicate_annotation.split(",")
 
                 for key in replicate_keys:
-                    # TODO split by =
                     targetKey = key
+                    if "=" in targetKey:
+                        targetKey = key[key.index("=")+1:]
+                        key = key[:key.index("=")]
                     if key in secret.data:
                         value = base64.b64decode(secret.data[key]).decode('utf-8')
                         logging.info(f"Found key '{key}' in secret. Preparing to annotate clusters.")
