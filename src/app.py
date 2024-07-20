@@ -88,14 +88,22 @@ while True:
                 if cluster_identifier in annotations:
                     annotations.update(cluster_annotations[cluster_identifier])
 
-                if annotations:
-                    logging.info(f"Annotating cluster: {cluster_identifier} with {annotations}")
-                    annotations = cluster_resource['metadata'].get('annotations', {})
-                    annotations.update(annotations)
+                new_annotations = cluster_resource['metadata'].get('annotations', {})
+
+                updated = False
+                for new_annotation in new_annotations:
+                    if new_annotation.startswith("rancher-fleet-secrets.deltachaos.de/secret/") and not new_annotation in new_annotations:
+                        updated = True
+                        del new_annotations[new_annotation]
+
+                new_annotations.update(annotations)
+
+                if annotations or updated:
+                    logging.info(f"Annotating cluster: {cluster_identifier} with {new_annotations}")
                     # Update the Cluster resource with the collected annotations
                     body = {
                         "metadata": {
-                            "annotations": annotations
+                            "annotations": new_annotations
                         }
                     }
                     logging.info(f"Patch: {body}")
