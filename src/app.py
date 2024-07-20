@@ -106,7 +106,7 @@ while True:
                 new_annotations.update(annotations)
                 new_annotations = collections.OrderedDict(sorted(new_annotations.items()))
 
-                if json.dumps(new_annotations) != json.dumps(annotations) or updated:
+                if new_annotations != annotations or updated:
                     logging.info(f"Annotating cluster: {cluster_identifier} with {new_annotations}")
                     # Update the Cluster resource with the collected annotations
                     body = {
