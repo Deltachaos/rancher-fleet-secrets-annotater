@@ -42,3 +42,21 @@ helm:
     auth:
       rootPassword: ${ get .ClusterAnnotations "rancher-fleet-secrets.deltachaos.de/secret/some-copy" }
 ```
+
+# Installation 
+
+## Dependencies
+
+This project is meant to be installed into a Rancher cluster.
+
+## Helm
+
+Install the helm Chart in this repository to your Rancher cluster. If you are using fleet, you can install the Helm
+chart with this `fleet.yaml`.
+
+```yaml
+defaultNamespace: external-secrets-rso
+
+helm:
+  chart: git::https://github.com/Deltachaos/rancher-fleet-secrets-annotater//helm/rancher-fleet-secrets-annotater?ref=main
+  version: 0.1.0
