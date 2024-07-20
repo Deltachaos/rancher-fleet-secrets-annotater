@@ -97,8 +97,9 @@ while True:
                     logging.info(f"Add annotations for {cluster_identifier}")
                     annotations.update(cluster_annotations[cluster_identifier])
 
-                new_annotations = cluster_resource['metadata'].get('annotations', {})
+                current_annotations = cluster_resource['metadata'].get('annotations', {})
 
+                new_annotations = current_annotations.copy()
                 new_annotations_copy = new_annotations.copy()
                 updated = False
                 for new_annotation in new_annotations_copy:
@@ -108,7 +109,7 @@ while True:
 
                 new_annotations.update(annotations)
 
-                if new_annotations != annotations or updated:
+                if new_annotations != current_annotations or updated:
                     logging.info(f"Annotating cluster: {cluster_identifier} with {new_annotations}")
                     # Update the Cluster resource with the collected annotations
                     cluster_resource['metadata']['annotations'] = new_annotations
