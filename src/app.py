@@ -94,7 +94,6 @@ while True:
         # Sleep for 15 seconds
         time.sleep(15)
     except Exception as e:
-        logging.error(f"An error occurred: {e}")
-        print(traceback.format_exc())
+        logging.error(f"An error occurred: {e}" + traceback.format_exc())
         # Optionally add a sleep or retry mechanism in case of failure
         time.sleep(15)
