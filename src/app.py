@@ -1,6 +1,7 @@
 import time
 import logging
 from kubernetes import client, config
+import base64
 import traceback
 
 # Configure logging
@@ -49,8 +50,10 @@ while True:
                 replicate_keys = replicate_annotation.split(",")
 
                 for key in replicate_keys:
+                    # TODO split by =
+                    targetKey = key
                     if key in secret.data:
-                        value = secret.data[key]
+                        value = base64.b64decode(secret.data[key]).decode('utf-8')
                         logging.info(f"Found key '{key}' in secret. Preparing to annotate clusters.")
 
                         if cluster_annotation != "":
@@ -58,9 +61,9 @@ while True:
                             for cluster_identifier in clusters:
                                 if cluster_identifier not in cluster_annotations:
                                     cluster_annotations[cluster_identifier] = {}
-                                cluster_annotations[cluster_identifier][f"rancher-fleet-secrets.deltachaos.de/secret/{key}"] = value
+                                cluster_annotations[cluster_identifier][f"rancher-fleet-secrets.deltachaos.de/secret/{targetKey}"] = value
                         else:
-                            all_clusters_annotations[f"rancher-fleet-secrets.deltachaos.de/secret/{key}"] = value
+                            all_clusters_annotations[f"rancher-fleet-secrets.deltachaos.de/secret/{targetKey}"] = value
 
 
         logging.info("Fetching all namespaces.")

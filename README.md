@@ -11,9 +11,9 @@ kind: Secret
 metadata:
   name: my-secret
   annotations:
-    rancher-fleet-secrets.alpha.deltachaos.de/replicate: some-key:some-copy,someother-key
+    rancher-fleet-secrets.alpha.deltachaos.de/replicate: some-key=some-copy,someother-key
 type: Opaque
-data:
+stringData:
   some-key: some-value
   someother-key: someother-value
   foo: bar
