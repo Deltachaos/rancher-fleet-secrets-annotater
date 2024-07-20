@@ -6,7 +6,12 @@ from kubernetes import client, config
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Load Kubernetes configuration
-config.load_kube_config()
+try:
+    config.load_incluster_config()
+    logging.info("Successfully loaded in-cluster configuration.")
+except Exception as e:
+    logging.error(f"Failed to load in-cluster configuration: {e}")
+    raise
 
 # Create API clients
 v1 = client.CoreV1Api()
