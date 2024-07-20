@@ -110,10 +110,10 @@ while True:
                     logging.info(f"Annotating cluster: {cluster_identifier} with {new_annotations}")
                     # Update the Cluster resource with the collected annotations
                     cluster_resource['metadata']['annotations'] = new_annotations
-
-                    crd_api.replace_cluster_custom_object(
+                    crd_api.replace_namespaced_custom_object(
                         group=GROUP,
                         version=VERSION,
+                        namespace=cluster_namespace,
                         plural=PLURAL,
                         name=cluster_name,
                         body=cluster_resource
