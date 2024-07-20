@@ -26,7 +26,7 @@ GROUP = "fleet.cattle.io"
 VERSION = "v1alpha1"
 PLURAL = "clusters"
 
-SECRET_PREFIX = "rancher-fleet-secrets-secret.deltachaos.de/"
+SECRET_PREFIX = "secret.fleet-secrets.alpha.deltachaos.de/"
 
 logging.info("Starting the script.")
 
@@ -44,13 +44,13 @@ while True:
             annotations = secret.metadata.annotations
 
             # Check if the secret has the desired annotation
-            if annotations is not None and "rancher-fleet-secrets.alpha.deltachaos.de/replicate" in annotations:
+            if annotations is not None and "fleet-secrets.alpha.deltachaos.de/replicate" in annotations:
                 logging.info(f"Processing secret: {secret.metadata.name} in namespace: {secret.metadata.namespace}")
 
-                cluster_annotation = annotations.get("rancher-fleet-secrets.alpha.deltachaos.de/clusters", "")
+                cluster_annotation = annotations.get("fleet-secrets.alpha.deltachaos.de/clusters", "")
                 clusters = cluster_annotation.split(",")
 
-                replicate_annotation = annotations["rancher-fleet-secrets.alpha.deltachaos.de/replicate"]
+                replicate_annotation = annotations["fleet-secrets.alpha.deltachaos.de/replicate"]
                 replicate_keys = replicate_annotation.split(",")
 
                 for key in replicate_keys:
