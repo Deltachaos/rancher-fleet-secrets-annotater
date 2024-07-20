@@ -38,25 +38,25 @@ metadata:
   name: cluster1
   namespace: fleet-default
   annotations:
-    secret.fleet-secrets.alpha.deltachaos.de/other-secret-key: test
+    secret.fleet-secrets.deltachaos.de/other-secret-key: test
 ---
 kind: Cluster
 metadata:
   name: cluster2
   namespace: fleet-default
   annotations:
-    secret.fleet-secrets.alpha.deltachaos.de/some-copy: some-value
-    secret.fleet-secrets.alpha.deltachaos.de/someother-key: someother-value
-    secret.fleet-secrets.alpha.deltachaos.de/other-secret-key: test
+    secret.fleet-secrets.deltachaos.de/some-copy: some-value
+    secret.fleet-secrets.deltachaos.de/someother-key: someother-value
+    secret.fleet-secrets.deltachaos.de/other-secret-key: test
 ---
 kind: Cluster
 metadata:
   name: cluster3
   namespace: fleet-local
   annotations:
-    secret.fleet-secrets.alpha.deltachaos.de/some-copy: some-value
-    secret.fleet-secrets.alpha.deltachaos.de/someother-key: someother-value
-    secret.fleet-secrets.alpha.deltachaos.de/other-secret-key: test
+    secret.fleet-secrets.deltachaos.de/some-copy: some-value
+    secret.fleet-secrets.deltachaos.de/someother-key: someother-value
+    secret.fleet-secrets.deltachaos.de/other-secret-key: test
 ```
 
 # Why is it useful?

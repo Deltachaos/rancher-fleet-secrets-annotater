@@ -26,7 +26,7 @@ GROUP = "fleet.cattle.io"
 VERSION = "v1alpha1"
 PLURAL = "clusters"
 
-SECRET_PREFIX = "secret.fleet-secrets.alpha.deltachaos.de/"
+SECRET_PREFIX = "secret.fleet-secrets.deltachaos.de/"
 
 logging.info("Starting the script.")
 
