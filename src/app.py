@@ -58,37 +58,42 @@ while True:
                                 cluster_annotations[cluster_identifier] = {}
                             cluster_annotations[cluster_identifier][f"rancher-fleet-secrets.deltachaos.de/secret/{key}"] = value
 
-        logging.info("Fetching all cluster resources.")
-        # Get all Cluster resources
-        cluster_resources = crd_api.list_cluster_custom_object(
-            group=GROUP, version=VERSION, plural=PLURAL, namespace=""
-        )
+        logging.info("Fetching all namespaces.")
+        # Get all namespaces
+        namespaces = v1.list_namespace()
+        for ns in namespaces.items:
+            namespace = ns.metadata.name
+            logging.info(f"Fetching cluster resources in namespace: {namespace}")
+            # Get all Cluster resources in the current namespace
+            cluster_resources = crd_api.list_namespaced_custom_object(
+                group=GROUP, version=VERSION, plural=PLURAL, namespace=namespace
+            )
 
-        for cluster_resource in cluster_resources['items']:
-            cluster_name = cluster_resource['metadata']['name']
-            cluster_namespace = cluster_resource['metadata']['namespace']
-            cluster_identifier = f"{cluster_namespace}/{cluster_name}"
+            for cluster_resource in cluster_resources['items']:
+                cluster_name = cluster_resource['metadata']['name']
+                cluster_namespace = cluster_resource['metadata']['namespace']
+                cluster_identifier = f"{cluster_namespace}/{cluster_name}"
 
-            if cluster_identifier in cluster_annotations:
-                logging.info(f"Annotating cluster: {cluster_identifier}")
-                annotations = cluster_resource['metadata'].get('annotations', {})
-                annotations.update(cluster_annotations[cluster_identifier])
+                if cluster_identifier in cluster_annotations:
+                    logging.info(f"Annotating cluster: {cluster_identifier}")
+                    annotations = cluster_resource['metadata'].get('annotations', {})
+                    annotations.update(cluster_annotations[cluster_identifier])
 
-                # Update the Cluster resource with the collected annotations
-                body = {
-                    "metadata": {
-                        "annotations": annotations
+                    # Update the Cluster resource with the collected annotations
+                    body = {
+                        "metadata": {
+                            "annotations": annotations
+                        }
                     }
-                }
-                crd_api.patch_namespaced_custom_object(
-                    group=GROUP,
-                    version=VERSION,
-                    namespace=cluster_namespace,
-                    plural=PLURAL,
-                    name=cluster_name,
-                    body=body
-                )
-                logging.info(f"Successfully patched cluster: {cluster_identifier}")
+                    crd_api.patch_namespaced_custom_object(
+                        group=GROUP,
+                        version=VERSION,
+                        namespace=cluster_namespace,
+                        plural=PLURAL,
+                        name=cluster_name,
+                        body=body
+                    )
+                    logging.info(f"Successfully patched cluster: {cluster_identifier}")
 
         logging.info("Sleeping for 15 seconds.")
         # Sleep for 15 seconds
