@@ -94,8 +94,6 @@ while True:
 
                 new_annotations = cluster_resource['metadata'].get('annotations', {})
 
-                annotations = collections.OrderedDict(sorted(annotations.items()))
-
                 new_annotations_copy = new_annotations.copy()
                 updated = False
                 for new_annotation in new_annotations_copy:
@@ -104,7 +102,6 @@ while True:
                         del new_annotations[new_annotation]
 
                 new_annotations.update(annotations)
-                new_annotations = collections.OrderedDict(sorted(new_annotations.items()))
 
                 if new_annotations != annotations or updated:
                     logging.info(f"Annotating cluster: {cluster_identifier} with {new_annotations}")
