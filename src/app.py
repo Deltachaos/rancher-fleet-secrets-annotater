@@ -114,7 +114,6 @@ while True:
                     crd_api.replace_cluster_custom_object(
                         group=GROUP,
                         version=VERSION,
-                        namespace=cluster_namespace,
                         plural=PLURAL,
                         name=cluster_name,
                         body=cluster_resource
