@@ -1,6 +1,7 @@
 import time
 import logging
 from kubernetes import client, config
+import traceback
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -94,5 +95,6 @@ while True:
         time.sleep(15)
     except Exception as e:
         logging.error(f"An error occurred: {e}")
+        print(traceback.format_exc())
         # Optionally add a sleep or retry mechanism in case of failure
         time.sleep(15)
