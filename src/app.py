@@ -106,16 +106,15 @@ while True:
                             "annotations": new_annotations
                         }
                     }
-                    logging.info(f"Patch: {body}")
 
-                    #crd_api.patch_namespaced_custom_object(
-                    #    group=GROUP,
-                    #    version=VERSION,
-                    #    namespace=cluster_namespace,
-                    #    plural=PLURAL,
-                    #    name=cluster_name,
-                    #    body=body
-                    #)
+                    crd_api.patch_namespaced_custom_object(
+                        group=GROUP,
+                        version=VERSION,
+                        namespace=cluster_namespace,
+                        plural=PLURAL,
+                        name=cluster_name,
+                        body=body
+                    )
                     logging.info(f"Successfully patched cluster: {cluster_identifier}")
 
         logging.info("Sleeping for 15 seconds.")
