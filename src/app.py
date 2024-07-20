@@ -98,7 +98,7 @@ while True:
 
                 updated = False
                 for new_annotation in new_annotations:
-                    if new_annotation.startswith(SECRET_PREFIX) and not new_annotation in new_annotations:
+                    if new_annotation.startswith(SECRET_PREFIX) and not new_annotation in annotations:
                         updated = True
                         del new_annotations[new_annotation]
 
